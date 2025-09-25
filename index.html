@@ -3,15 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rampurhat One</title>
+  <title>BizConnect</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script>
+    // Global error tracker
+    window.onerror = function(message, source, lineno, colno, error) {
+      alert("Error: " + message + "\nSource: " + source + "\nLine: " + lineno);
+    };
+  </script>
 </head>
 <body>
-  <h1 style="text-align:center;">Rampurhat One</h1>
-  <p style="text-align:center;">Your local superapp</p>
-  <div style="text-align:center; margin-top:20px;">
-    <button onclick="location.href='signup-customer.html'">Create account as Customer</button><br><br>
-    <button onclick="location.href='signup-merchant.html'">Create account as Merchant</button><br><br>
-    <button onclick="location.href='login.html'">Already a user? Login</button>
+  <div class="container">
+    <h1 class="app-title">BizConnect</h1>
+    <p class="tagline">Connecting Customers & Merchants Seamlessly</p>
+
+    <div class="button-group">
+      <button onclick="location.href='signup-customer.html'" class="btn primary">I’m a Customer</button>
+      <button onclick="location.href='signup-merchant.html'" class="btn secondary">I’m a Merchant</button>
+      <button onclick="location.href='login.html'" class="btn outline">Login</button>
+    </div>
+
+    <footer>
+      <p>📍 Kolkata, India</p>
+      <p class="small">Built with ❤️ on Firebase & GitHub</p>
+    </footer>
   </div>
 </body>
 </html>
