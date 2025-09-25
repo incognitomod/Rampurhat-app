@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Merchant Signup</title>
+</head>
+<body>
+  <h2 style="text-align:center;">Merchant Signup</h2>
+  <div style="text-align:center;">
+    <input id="shopName" type="text" placeholder="Shop Name"><br><br>
+    <input id="address" type="text" placeholder="Address"><br><br>
+    <button id="googleSignup">Sign up with Google</button>
+  </div>
+
+  <script type="module">
+    import { auth, provider, db, signInWithPopup, setDoc, doc } from './firebase.js';
+
+    document.getElementById('googleSignup').onclick = async () => {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        shopName: document.getElementById('shopName').value,
+        address: document.getElementById('address').value,
+        email: user.email,
+        role: "merchant"
+      });
+
+      alert("Signup successful!");
+      location.href = "merchant-dashboard.html";
+    };
+  </script>
+</body>
+</html>
