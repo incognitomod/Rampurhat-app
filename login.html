@@ -12,12 +12,29 @@
   </div>
 
   <script type="module">
-    import { auth, provider, signInWithPopup } from './firebase.js';
+    import { auth, provider, signInWithPopup, db, doc, getDoc } from './firebase.js';
 
     document.getElementById('googleLogin').onclick = async () => {
-      await signInWithPopup(auth, provider);
-      alert("Login successful!");
-      location.href = "feed.html";
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+
+        const userDoc = await getDoc(doc(db, "users", user.uid));
+        if (!userDoc.exists()) {
+          alert("User not found! Please signup first.");
+          location.href = "index.html";
+          return;
+        }
+
+        alert("Login successful!");
+        if (userDoc.data().role === "customer") {
+          location.href = "feed.html";
+        } else {
+          location.href = "merchant-dashboard.html";
+        }
+      } catch (err) {
+        alert("Login failed: " + err.message);
+      }
     };
   </script>
 </body>
