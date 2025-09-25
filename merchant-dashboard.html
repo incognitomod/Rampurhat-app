@@ -7,27 +7,72 @@
 </head>
 <body>
   <h2 style="text-align:center;">Merchant Dashboard</h2>
+
   <div style="text-align:center;">
     <input id="itemName" type="text" placeholder="Item Name"><br><br>
     <input id="price" type="number" placeholder="Price"><br><br>
     <button id="addItem">Add Item</button>
   </div>
 
-  <script type="module">
-    import { auth, db, onAuthStateChanged, collection, addDoc } from './firebase.js';
+  <div id="merchantItems" style="margin-top:20px; width:90%; margin:auto; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <!-- Merchant items will appear here -->
+  </div>
 
+  <script type="module">
+    import { auth, db, onAuthStateChanged, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from './firebase.js';
+
+    // Ensure user is logged in
     onAuthStateChanged(auth, user => {
       if (!user) { alert("Login first!"); location.href="login.html"; }
+      else { loadMerchantItems(); }
     });
 
+    async function loadMerchantItems() {
+      const querySnapshot = await getDocs(collection(db, "items"));
+      const container = document.getElementById("merchantItems");
+      container.innerHTML = "";
+
+      querySnapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        if (data.merchantId === auth.currentUser.uid) {
+          const div = document.createElement("div");
+          div.style.border = "1px solid #000";
+          div.style.padding = "10px";
+          div.style.textAlign = "center";
+          div.innerHTML = `
+            <b>${data.name}</b><br>Price: ₹${data.price}<br>
+            <button onclick="editItem('${docSnap.id}')">Edit</button>
+            <button onclick="deleteItem('${docSnap.id}')">Delete</button>
+          `;
+          container.appendChild(div);
+        }
+      });
+    }
+
+    window.editItem = async (itemId) => {
+      const newName = prompt("New item name:");
+      const newPrice = prompt("New price:");
+      if (newName && newPrice) {
+        await updateDoc(doc(db, "items", itemId), { name: newName, price: newPrice });
+        loadMerchantItems();
+      }
+    }
+
+    window.deleteItem = async (itemId) => {
+      if (confirm("Delete this item?")) {
+        await deleteDoc(doc(db, "items", itemId));
+        loadMerchantItems();
+      }
+    }
+
     document.getElementById('addItem').onclick = async () => {
-      const user = auth.currentUser;
       await addDoc(collection(db, "items"), {
-        merchantId: user.uid,
+        merchantId: auth.currentUser.uid,
         name: document.getElementById('itemName').value,
         price: document.getElementById('price').value
       });
       alert("Item added!");
+      loadMerchantItems();
     };
   </script>
 </body>
