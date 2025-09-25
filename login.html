@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+</head>
+<body>
+  <h2 style="text-align:center;">Login</h2>
+  <div style="text-align:center;">
+    <button id="googleLogin">Sign in with Google</button>
+  </div>
+
+  <script type="module">
+    import { auth, provider, signInWithPopup } from './firebase.js';
+
+    document.getElementById('googleLogin').onclick = async () => {
+      await signInWithPopup(auth, provider);
+      alert("Login successful!");
+      location.href = "feed.html";
+    };
+  </script>
+</body>
+</html>
